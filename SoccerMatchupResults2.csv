@@ -1,0 +1,241 @@
+,Home Team Probability of Loss,Home Team Probability of Win,Home Team Name,Away Team Name,Match Results
+0,0.666666667,0.333333333,Arsenal,Bournemouth,Arsenal Lost
+0,0.422222222,0.577777778,Arsenal,Chelsea,Arsenal Won
+0,0.422222222,0.577777778,Arsenal,Crystal Palace,Arsenal Won
+0,0.4,0.6,Arsenal,Everton,Arsenal Won
+0,0.4,0.6,Arsenal,Leicester City,Arsenal Won
+0,0.377777778,0.622222222,Arsenal,Liverpool,Arsenal Won
+0,0.711111111,0.288888889,Arsenal,Manchester City,Arsenal Lost
+0,0.422222222,0.577777778,Arsenal,Manchester United,Arsenal Won
+0,0.4,0.6,Arsenal,Southampton,Arsenal Won
+0,0.4,0.6,Arsenal,Stoke City,Arsenal Won
+0,0.644444444,0.355555556,Arsenal,Swansea City,Arsenal Lost
+0,0.422222222,0.577777778,Arsenal,Tottenham,Arsenal Won
+0,0.377777778,0.622222222,Arsenal,Watford,Arsenal Won
+0,0.4,0.6,Arsenal,West Bromwich,Arsenal Won
+0,0.377777778,0.622222222,Arsenal,West Ham United,Arsenal Won
+0,0.733333333,0.266666667,Bournemouth,Arsenal,Bournemouth Lost
+0,0.466666667,0.533333333,Bournemouth,Chelsea,Bournemouth Won
+0,0.511111111,0.488888889,Bournemouth,Crystal Palace,Bournemouth Lost
+0,0.488888889,0.511111111,Bournemouth,Everton,Bournemouth Won
+0,0.511111111,0.488888889,Bournemouth,Leicester City,Bournemouth Lost
+0,0.533333333,0.466666667,Bournemouth,Liverpool,Bournemouth Lost
+0,0.733333333,0.266666667,Bournemouth,Manchester City,Bournemouth Lost
+0,0.533333333,0.466666667,Bournemouth,Manchester United,Bournemouth Lost
+0,0.466666667,0.533333333,Bournemouth,Southampton,Bournemouth Won
+0,0.466666667,0.533333333,Bournemouth,Stoke City,Bournemouth Won
+0,0.688888889,0.311111111,Bournemouth,Swansea City,Bournemouth Lost
+0,0.511111111,0.488888889,Bournemouth,Tottenham,Bournemouth Lost
+0,0.466666667,0.533333333,Bournemouth,Watford,Bournemouth Won
+0,0.466666667,0.533333333,Bournemouth,West Bromwich,Bournemouth Won
+0,0.488888889,0.511111111,Bournemouth,West Ham United,Bournemouth Won
+0,0.755555556,0.244444444,Chelsea,Arsenal,Chelsea Lost
+0,0.711111111,0.288888889,Chelsea,Bournemouth,Chelsea Lost
+0,0.488888889,0.511111111,Chelsea,Crystal Palace,Chelsea Won
+0,0.444444444,0.555555556,Chelsea,Everton,Chelsea Won
+0,0.466666667,0.533333333,Chelsea,Leicester City,Chelsea Won
+0,0.466666667,0.533333333,Chelsea,Liverpool,Chelsea Won
+0,0.755555556,0.244444444,Chelsea,Manchester City,Chelsea Lost
+0,0.511111111,0.488888889,Chelsea,Manchester United,Chelsea Lost
+0,0.4,0.6,Chelsea,Southampton,Chelsea Won
+0,0.4,0.6,Chelsea,Stoke City,Chelsea Won
+0,0.711111111,0.288888889,Chelsea,Swansea City,Chelsea Lost
+0,0.444444444,0.555555556,Chelsea,Tottenham,Chelsea Won
+0,0.422222222,0.577777778,Chelsea,Watford,Chelsea Won
+0,0.4,0.6,Chelsea,West Bromwich,Chelsea Won
+0,0.422222222,0.577777778,Chelsea,West Ham United,Chelsea Won
+0,0.755555556,0.244444444,Crystal Palace,Arsenal,Crystal Palace Lost
+0,0.755555556,0.244444444,Crystal Palace,Bournemouth,Crystal Palace Lost
+0,0.422222222,0.577777778,Crystal Palace,Chelsea,Crystal Palace Won
+0,0.444444444,0.555555556,Crystal Palace,Everton,Crystal Palace Won
+0,0.422222222,0.577777778,Crystal Palace,Leicester City,Crystal Palace Won
+0,0.422222222,0.577777778,Crystal Palace,Liverpool,Crystal Palace Won
+0,0.755555556,0.244444444,Crystal Palace,Manchester City,Crystal Palace Lost
+0,0.444444444,0.555555556,Crystal Palace,Manchester United,Crystal Palace Won
+0,0.4,0.6,Crystal Palace,Southampton,Crystal Palace Won
+0,0.4,0.6,Crystal Palace,Stoke City,Crystal Palace Won
+0,0.733333333,0.266666667,Crystal Palace,Swansea City,Crystal Palace Lost
+0,0.4,0.6,Crystal Palace,Tottenham,Crystal Palace Won
+0,0.422222222,0.577777778,Crystal Palace,Watford,Crystal Palace Won
+0,0.4,0.6,Crystal Palace,West Bromwich,Crystal Palace Won
+0,0.422222222,0.577777778,Crystal Palace,West Ham United,Crystal Palace Won
+0,0.822222222,0.177777778,Everton,Arsenal,Everton Lost
+0,0.8,0.2,Everton,Bournemouth,Everton Lost
+0,0.511111111,0.488888889,Everton,Chelsea,Everton Lost
+0,0.555555556,0.444444444,Everton,Crystal Palace,Everton Lost
+0,0.533333333,0.466666667,Everton,Leicester City,Everton Lost
+0,0.533333333,0.466666667,Everton,Liverpool,Everton Lost
+0,0.822222222,0.177777778,Everton,Manchester City,Everton Lost
+0,0.577777778,0.422222222,Everton,Manchester United,Everton Lost
+0,0.488888889,0.511111111,Everton,Southampton,Everton Won
+0,0.488888889,0.511111111,Everton,Stoke City,Everton Won
+0,0.777777778,0.222222222,Everton,Swansea City,Everton Lost
+0,0.511111111,0.488888889,Everton,Tottenham,Everton Lost
+0,0.533333333,0.466666667,Everton,Watford,Everton Lost
+0,0.488888889,0.511111111,Everton,West Bromwich,Everton Won
+0,0.533333333,0.466666667,Everton,West Ham United,Everton Lost
+0,0.755555556,0.244444444,Leicester City,Arsenal,Leicester City Lost
+0,0.755555556,0.244444444,Leicester City,Bournemouth,Leicester City Lost
+0,0.444444444,0.555555556,Leicester City,Chelsea,Leicester City Won
+0,0.444444444,0.555555556,Leicester City,Crystal Palace,Leicester City Won
+0,0.444444444,0.555555556,Leicester City,Everton,Leicester City Won
+0,0.4,0.6,Leicester City,Liverpool,Leicester City Won
+0,0.755555556,0.244444444,Leicester City,Manchester City,Leicester City Lost
+0,0.422222222,0.577777778,Leicester City,Manchester United,Leicester City Won
+0,0.422222222,0.577777778,Leicester City,Southampton,Leicester City Won
+0,0.422222222,0.577777778,Leicester City,Stoke City,Leicester City Won
+0,0.733333333,0.266666667,Leicester City,Swansea City,Leicester City Lost
+0,0.422222222,0.577777778,Leicester City,Tottenham,Leicester City Won
+0,0.422222222,0.577777778,Leicester City,Watford,Leicester City Won
+0,0.422222222,0.577777778,Leicester City,West Bromwich,Leicester City Won
+0,0.422222222,0.577777778,Leicester City,West Ham United,Leicester City Won
+0,0.755555556,0.244444444,Liverpool,Arsenal,Liverpool Lost
+0,0.755555556,0.244444444,Liverpool,Bournemouth,Liverpool Lost
+0,0.444444444,0.555555556,Liverpool,Chelsea,Liverpool Won
+0,0.444444444,0.555555556,Liverpool,Crystal Palace,Liverpool Won
+0,0.444444444,0.555555556,Liverpool,Everton,Liverpool Won
+0,0.422222222,0.577777778,Liverpool,Leicester City,Liverpool Won
+0,0.755555556,0.244444444,Liverpool,Manchester City,Liverpool Lost
+0,0.422222222,0.577777778,Liverpool,Manchester United,Liverpool Won
+0,0.422222222,0.577777778,Liverpool,Southampton,Liverpool Won
+0,0.422222222,0.577777778,Liverpool,Stoke City,Liverpool Won
+0,0.755555556,0.244444444,Liverpool,Swansea City,Liverpool Lost
+0,0.422222222,0.577777778,Liverpool,Tottenham,Liverpool Won
+0,0.422222222,0.577777778,Liverpool,Watford,Liverpool Won
+0,0.422222222,0.577777778,Liverpool,West Bromwich,Liverpool Won
+0,0.422222222,0.577777778,Liverpool,West Ham United,Liverpool Won
+0,0.711111111,0.288888889,Manchester City,Arsenal,Manchester City Lost
+0,0.666666667,0.333333333,Manchester City,Bournemouth,Manchester City Lost
+0,0.422222222,0.577777778,Manchester City,Chelsea,Manchester City Won
+0,0.422222222,0.577777778,Manchester City,Crystal Palace,Manchester City Won
+0,0.4,0.6,Manchester City,Everton,Manchester City Won
+0,0.4,0.6,Manchester City,Leicester City,Manchester City Won
+0,0.377777778,0.622222222,Manchester City,Liverpool,Manchester City Won
+0,0.422222222,0.577777778,Manchester City,Manchester United,Manchester City Won
+0,0.4,0.6,Manchester City,Southampton,Manchester City Won
+0,0.4,0.6,Manchester City,Stoke City,Manchester City Won
+0,0.644444444,0.355555556,Manchester City,Swansea City,Manchester City Lost
+0,0.422222222,0.577777778,Manchester City,Tottenham,Manchester City Won
+0,0.377777778,0.622222222,Manchester City,Watford,Manchester City Won
+0,0.4,0.6,Manchester City,West Bromwich,Manchester City Won
+0,0.377777778,0.622222222,Manchester City,West Ham United,Manchester City Won
+0,0.8,0.2,Manchester United,Arsenal,Manchester United Lost
+0,0.8,0.2,Manchester United,Bournemouth,Manchester United Lost
+0,0.466666667,0.533333333,Manchester United,Chelsea,Manchester United Won
+0,0.466666667,0.533333333,Manchester United,Crystal Palace,Manchester United Won
+0,0.466666667,0.533333333,Manchester United,Everton,Manchester United Won
+0,0.444444444,0.555555556,Manchester United,Leicester City,Manchester United Won
+0,0.422222222,0.577777778,Manchester United,Liverpool,Manchester United Won
+0,0.8,0.2,Manchester United,Manchester City,Manchester United Lost
+0,0.444444444,0.555555556,Manchester United,Southampton,Manchester United Won
+0,0.444444444,0.555555556,Manchester United,Stoke City,Manchester United Won
+0,0.777777778,0.222222222,Manchester United,Swansea City,Manchester United Lost
+0,0.444444444,0.555555556,Manchester United,Tottenham,Manchester United Won
+0,0.466666667,0.533333333,Manchester United,Watford,Manchester United Won
+0,0.444444444,0.555555556,Manchester United,West Bromwich,Manchester United Won
+0,0.466666667,0.533333333,Manchester United,West Ham United,Manchester United Won
+0,0.733333333,0.266666667,Southampton,Arsenal,Southampton Lost
+0,0.688888889,0.311111111,Southampton,Bournemouth,Southampton Lost
+0,0.444444444,0.555555556,Southampton,Chelsea,Southampton Won
+0,0.488888889,0.511111111,Southampton,Crystal Palace,Southampton Won
+0,0.444444444,0.555555556,Southampton,Everton,Southampton Won
+0,0.466666667,0.533333333,Southampton,Leicester City,Southampton Won
+0,0.488888889,0.511111111,Southampton,Liverpool,Southampton Won
+0,0.733333333,0.266666667,Southampton,Manchester City,Southampton Lost
+0,0.511111111,0.488888889,Southampton,Manchester United,Southampton Lost
+0,0.422222222,0.577777778,Southampton,Stoke City,Southampton Won
+0,0.688888889,0.311111111,Southampton,Swansea City,Southampton Lost
+0,0.466666667,0.533333333,Southampton,Tottenham,Southampton Won
+0,0.4,0.6,Southampton,Watford,Southampton Won
+0,0.422222222,0.577777778,Southampton,West Bromwich,Southampton Won
+0,0.4,0.6,Southampton,West Ham United,Southampton Won
+0,0.711111111,0.288888889,Stoke City,Arsenal,Stoke City Lost
+0,0.666666667,0.333333333,Stoke City,Bournemouth,Stoke City Lost
+0,0.422222222,0.577777778,Stoke City,Chelsea,Stoke City Won
+0,0.466666667,0.533333333,Stoke City,Crystal Palace,Stoke City Won
+0,0.422222222,0.577777778,Stoke City,Everton,Stoke City Won
+0,0.444444444,0.555555556,Stoke City,Leicester City,Stoke City Won
+0,0.444444444,0.555555556,Stoke City,Liverpool,Stoke City Won
+0,0.711111111,0.288888889,Stoke City,Manchester City,Stoke City Lost
+0,0.466666667,0.533333333,Stoke City,Manchester United,Stoke City Won
+0,0.4,0.6,Stoke City,Southampton,Stoke City Won
+0,0.666666667,0.333333333,Stoke City,Swansea City,Stoke City Lost
+0,0.444444444,0.555555556,Stoke City,Tottenham,Stoke City Won
+0,0.377777778,0.622222222,Stoke City,Watford,Stoke City Won
+0,0.4,0.6,Stoke City,West Bromwich,Stoke City Won
+0,0.377777778,0.622222222,Stoke City,West Ham United,Stoke City Won
+0,0.733333333,0.266666667,Swansea City,Arsenal,Swansea City Lost
+0,0.711111111,0.288888889,Swansea City,Bournemouth,Swansea City Lost
+0,0.444444444,0.555555556,Swansea City,Chelsea,Swansea City Won
+0,0.488888889,0.511111111,Swansea City,Crystal Palace,Swansea City Won
+0,0.466666667,0.533333333,Swansea City,Everton,Swansea City Won
+0,0.488888889,0.511111111,Swansea City,Leicester City,Swansea City Won
+0,0.466666667,0.533333333,Swansea City,Liverpool,Swansea City Won
+0,0.733333333,0.266666667,Swansea City,Manchester City,Swansea City Lost
+0,0.511111111,0.488888889,Swansea City,Manchester United,Swansea City Lost
+0,0.444444444,0.555555556,Swansea City,Southampton,Swansea City Won
+0,0.444444444,0.555555556,Swansea City,Stoke City,Swansea City Won
+0,0.466666667,0.533333333,Swansea City,Tottenham,Swansea City Won
+0,0.444444444,0.555555556,Swansea City,Watford,Swansea City Won
+0,0.444444444,0.555555556,Swansea City,West Bromwich,Swansea City Won
+0,0.444444444,0.555555556,Swansea City,West Ham United,Swansea City Won
+0,0.733333333,0.266666667,Tottenham,Arsenal,Tottenham Lost
+0,0.688888889,0.311111111,Tottenham,Bournemouth,Tottenham Lost
+0,0.377777778,0.622222222,Tottenham,Chelsea,Tottenham Won
+0,0.4,0.6,Tottenham,Crystal Palace,Tottenham Won
+0,0.377777778,0.622222222,Tottenham,Everton,Tottenham Won
+0,0.377777778,0.622222222,Tottenham,Leicester City,Tottenham Won
+0,0.355555556,0.644444444,Tottenham,Liverpool,Tottenham Won
+0,0.733333333,0.266666667,Tottenham,Manchester City,Tottenham Lost
+0,0.422222222,0.577777778,Tottenham,Manchester United,Tottenham Won
+0,0.333333333,0.666666667,Tottenham,Southampton,Tottenham Won
+0,0.333333333,0.666666667,Tottenham,Stoke City,Tottenham Won
+0,0.666666667,0.333333333,Tottenham,Swansea City,Tottenham Lost
+0,0.355555556,0.644444444,Tottenham,Watford,Tottenham Won
+0,0.333333333,0.666666667,Tottenham,West Bromwich,Tottenham Won
+0,0.355555556,0.644444444,Tottenham,West Ham United,Tottenham Won
+0,0.8,0.2,Watford,Arsenal,Watford Lost
+0,0.777777778,0.222222222,Watford,Bournemouth,Watford Lost
+0,0.488888889,0.511111111,Watford,Chelsea,Watford Won
+0,0.533333333,0.466666667,Watford,Crystal Palace,Watford Lost
+0,0.511111111,0.488888889,Watford,Everton,Watford Lost
+0,0.511111111,0.488888889,Watford,Leicester City,Watford Lost
+0,0.488888889,0.511111111,Watford,Liverpool,Watford Won
+0,0.8,0.2,Watford,Manchester City,Watford Lost
+0,0.533333333,0.466666667,Watford,Manchester United,Watford Lost
+0,0.466666667,0.533333333,Watford,Southampton,Watford Won
+0,0.466666667,0.533333333,Watford,Stoke City,Watford Won
+0,0.755555556,0.244444444,Watford,Swansea City,Watford Lost
+0,0.488888889,0.511111111,Watford,Tottenham,Watford Won
+0,0.466666667,0.533333333,Watford,West Bromwich,Watford Won
+0,0.488888889,0.511111111,Watford,West Ham United,Watford Won
+0,0.711111111,0.288888889,West Bromwich,Arsenal,West Bromwich Lost
+0,0.666666667,0.333333333,West Bromwich,Bournemouth,West Bromwich Lost
+0,0.4,0.6,West Bromwich,Chelsea,West Bromwich Won
+0,0.444444444,0.555555556,West Bromwich,Crystal Palace,West Bromwich Won
+0,0.4,0.6,West Bromwich,Everton,West Bromwich Won
+0,0.444444444,0.555555556,West Bromwich,Leicester City,West Bromwich Won
+0,0.444444444,0.555555556,West Bromwich,Liverpool,West Bromwich Won
+0,0.711111111,0.288888889,West Bromwich,Manchester City,West Bromwich Lost
+0,0.466666667,0.533333333,West Bromwich,Manchester United,West Bromwich Won
+0,0.4,0.6,West Bromwich,Southampton,West Bromwich Won
+0,0.4,0.6,West Bromwich,Stoke City,West Bromwich Won
+0,0.666666667,0.333333333,West Bromwich,Swansea City,West Bromwich Lost
+0,0.444444444,0.555555556,West Bromwich,Tottenham,West Bromwich Won
+0,0.377777778,0.622222222,West Bromwich,Watford,West Bromwich Won
+0,0.377777778,0.622222222,West Bromwich,West Ham United,West Bromwich Won
+0,0.777777778,0.222222222,West Ham United,Arsenal,West Ham United Lost
+0,0.755555556,0.244444444,West Ham United,Bournemouth,West Ham United Lost
+0,0.466666667,0.533333333,West Ham United,Chelsea,West Ham United Won
+0,0.511111111,0.488888889,West Ham United,Crystal Palace,West Ham United Lost
+0,0.488888889,0.511111111,West Ham United,Everton,West Ham United Won
+0,0.488888889,0.511111111,West Ham United,Leicester City,West Ham United Won
+0,0.466666667,0.533333333,West Ham United,Liverpool,West Ham United Won
+0,0.777777778,0.222222222,West Ham United,Manchester City,West Ham United Lost
+0,0.511111111,0.488888889,West Ham United,Manchester United,West Ham United Lost
+0,0.444444444,0.555555556,West Ham United,Southampton,West Ham United Won
+0,0.444444444,0.555555556,West Ham United,Stoke City,West Ham United Won
+0,0.755555556,0.244444444,West Ham United,Swansea City,West Ham United Lost
+0,0.466666667,0.533333333,West Ham United,Tottenham,West Ham United Won
+0,0.466666667,0.533333333,West Ham United,Watford,West Ham United Won
+0,0.444444444,0.555555556,West Ham United,West Bromwich,West Ham United Won

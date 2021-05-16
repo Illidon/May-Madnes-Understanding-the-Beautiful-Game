@@ -1,0 +1,247 @@
+---
+title: "class_project_regression"
+author: "Linpeng Sun"
+date: "2021/3/22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r}
+library(plyr)
+prem_league <- read.csv("E:/School/DATA 367/Class Activities/Class Project/E0.csv", na.strings = "?")
+prem_league
+```
+
+```{r}
+prem_league$FTR <- revalue(prem_league$FTR, c("H"=2))
+prem_league$FTR <- revalue(prem_league$FTR, c("A"=0))
+prem_league$FTR <- revalue(prem_league$FTR, c("D"=1))
+```
+
+```{r}
+prem_league$FTR <- as.numeric(prem_league$FTR)
+```
+
+```{r}
+# Logistic Regression 1
+#glm.fit_1 <- glm(FTR ~ (HST/HS), family = binomial, data = prem_league)
+#summary(glm.fit_1)
+```
+
+```{r}
+# linear regression 1
+lm.fit1 <- lm(FTR ~ (HST/HS)+(AST/AS)+FTAG+FTHG+HC+AC+(HTHG-HTAG), data = prem_league) 
+summary(lm.fit1)
+```
+
+```{r}
+# linear regression 2
+lm.fit2 <- lm(FTR ~ (HST/HS)+(AST/AS)+FTAG+FTHG, data = prem_league) 
+summary(lm.fit2)
+```
+
+```{r}
+soccer <- read.csv("E:/School/DATA 367/Class Activities/Class Project/soccer.csv", na.strings = "?")
+soccer
+```
+
+```{r}
+c <- 1:ncol(soccer)
+home_team <- soccer[, c%%2 == 1]
+away_team <- soccer[, c%%2 == 0]
+```
+
+```{r}
+soccer_1 <- read.csv("E:/School/DATA 367/Class Activities/Class Project/soccer_SUPER_NEW.csv", na.strings = "?")
+```
+
+```{r}
+# draw substitution 1
+soccer_1$FTR <- revalue(prem_league$FTR, c("H"=1))
+soccer_1$FTR <- revalue(prem_league$FTR, c("A"=0))
+soccer_1$FTR <- revalue(prem_league$FTR, c("D"=-1))
+write.csv(soccer_1,"E:/School/DATA 367/Class Activities/Class Project\\soccer_negative_one_zero _one.csv", row.names = FALSE)
+#samuelerickson@email.arizona.edu
+```
+
+```{r}
+soccer_2 <- read.csv("E:/School/DATA 367/Class Activities/Class Project/soccer_SUPER_NEW.csv", na.strings = "?")
+```
+
+```{r}
+# draw substitution 1
+soccer_2$FTR <- revalue(soccer_2$FTR, c("H"=1))
+soccer_2$FTR <- revalue(soccer_2$FTR, c("A"=0))
+```
+
+# Multinomial logistic regression
+```{r}
+require(nnet)
+# Training the multinomial model
+multinom_model <- multinom(FTR ~ HomeTeam + HS + HF + HC + HY, data = prem_league)
+
+# Checking the model
+summary(multinom_model)
+```
+
+```{r}
+exp(coef(multinom_model))
+head(round(fitted(multinom_model), 2))
+```
+
+```{r}
+library(circlize)
+#library(png)
+#library(jpeg)
+circos.info(plot = TRUE)
+circos.par$cell.padding = c(0.0, 0.00, 0.00, 0.00)
+circos.initialize(letters[1:16], xlim = c(0, 16))
+for(i in 1:4) {
+    circos.track(ylim = c(0, 1))
+}
+
+# draw.sector(0, 360, 
+#     rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+#     rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 3),
+#     col = "#5588ff")    
+# W B #122f67
+# liverpool #c8102E
+# Tottenham #132257
+# Southham #d71920
+# Everton #003399
+# Crystal Palace #1B458F
+# Westham #7c2c3b
+# Chelsea #034694
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "a"),
+            get.cell.meta.data("cell.end.degree", sector.index = "p"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            col = "#0000cd")#0000cd   
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "a"),
+            get.cell.meta.data("cell.end.degree", sector.index = "h"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 4),
+            col = "red")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "a"),
+            get.cell.meta.data("cell.end.degree", sector.index = "d"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 3),
+            col = "#003399")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "c"),
+            get.cell.meta.data("cell.end.degree", sector.index = "d"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 2),
+            col = "#122f67")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "d"),
+            get.cell.meta.data("cell.end.degree", sector.index = "d"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 1),
+            col = "#132257")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "b"),
+            get.cell.meta.data("cell.end.degree", sector.index = "b"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 1),
+            col = "#d71920")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "g"),
+            get.cell.meta.data("cell.end.degree", sector.index = "h"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 2),
+            col = "#0000cd")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "h"),
+            get.cell.meta.data("cell.end.degree", sector.index = "h"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 1),
+            col = "#7c2c3b")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "f"),
+            get.cell.meta.data("cell.end.degree", sector.index = "f"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 1),
+            col = "#1B458F")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "i"),
+            get.cell.meta.data("cell.end.degree", sector.index = "l"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 3),
+            col = "yellow")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "i"),
+            get.cell.meta.data("cell.end.degree", sector.index = "j"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 2),
+            col = "black")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "l"),
+            get.cell.meta.data("cell.end.degree", sector.index = "l"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 1),
+            col = "#99ccff")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "j"),
+            get.cell.meta.data("cell.end.degree", sector.index = "j"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 1),
+            col = "red")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "m"),
+            get.cell.meta.data("cell.end.degree", sector.index = "n"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 2),
+            col = "#dc143c")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "n"),
+            get.cell.meta.data("cell.end.degree", sector.index = "n"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 1),
+            col = "#c8102E")
+
+draw.sector(get.cell.meta.data("cell.start.degree", sector.index = "p"),
+            get.cell.meta.data("cell.end.degree", sector.index = "p"),
+            rou1 = get.cell.meta.data("cell.top.radius", track.index = 1),
+            rou2 = get.cell.meta.data("cell.bottom.radius", track.index = 1),
+            col = "red")
+
+#image = as.raster(readJPEG("Manchester_City.jpg"))
+#circos.raster(image, CELL_META$xcenter, CELL_META$ycenter, width = "1cm", facing = "inside")
+```
+
+```{r}
+soccer_result <- read.csv("SoccerMatchupResults2.csv")
+head(soccer_result)
+soccer_result$result <- ifelse(soccer_result$Home.Team.Probability.of.Win > 0.5, 1, 0)
+```
+
+```{r}
+x <- colSums(matrix(soccer_result$result, nrow=15))
+team_result <- data.frame(x, row.names = unique(soccer_result$Home.Team.Name))
+team_result$x <- x/15
+team_result$team_name <- unique(soccer_result$Home.Team.Name)
+```
+
+```{r}
+library(ggplot2)
+# Basic piechart
+ggplot(team_result, aes(x="", y=x, fill=team_name)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0) +
+  theme_void() 
+```
+
+```{r}
+library(RColorBrewer)
+coul <- brewer.pal(5, "Set2") 
+par(mar=c(10,4,5,4))
+barplot(height=team_result$x, names=team_result$team_name, col=coul, las = 2)
+```
+

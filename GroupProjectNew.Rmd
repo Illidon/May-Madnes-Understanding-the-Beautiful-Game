@@ -1,0 +1,647 @@
+Y---
+title: "Group Project Data 367"
+author: "Samuel Erickson, Justin LaFoley, Weilin Lu, Ruihan Zhang, Linpeng Sun, Sarvesh Paradkar"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+                    "May Madness- Understanding the Beautiful Game"
+                    
+Introduction: 
+
+In this project, we will run a ‘March Madness’ style bracket for the top sixteen teams in the English Premier League and determine the ‘true’ winner of the championship using a bracket system rather than a league. 
+
+The English Premier League (EPL) is one of the most competitive soccer leagues in the world. It consists of twenty teams (clubs) from the United Kingdom, all battling it out for thirty eight gameweeks to be crowned the champion. The format of the league is straightforward- each team plays thirty eight games. One home game and one away game against every other team in the league. A win is worth three points, a draw is worth one and a loss is worth nothing. At the end of the season, the team with the most points wins. 
+
+The EPL does not involve any knockout games. There are mainly four common complaints of fans of the league. Firstly, the league format means that there is no ‘true winner’. Although Team A may beat Team B both times during the regular season, it is still possible for Team B to win the championship later on. Second, the fact that regular season games allow for a draw takes away from the excitement of the game. Third, since the champion is decided based on the number of points only, a champion is sometimes crowned weeks in advance, making for very poor viewership. Lastly, and this is the biggest complaint, there is no way to measure a team’s ‘clutch factor’. There is rarely any real pressure on most of the teams and thus, they aren’t always forced to perform to the best of their abilities. 
+
+The purpose of this project is to analyze the head to head performance of the teams, including their clutch factor, to play out a bracket consisting of the top sixteen teams at the end of the season. In this analysis, we will only be using data from past seasons. Thus, teams will be seeded according to their placement at the end of the regular season and brackets will be formed accordingly. The end goal is to observe whether the winner of the bracket is the same as the winner of the league or whether a different format produces a different winner. The data we use will come from every season except the one we are analyzing, and we will make use of a random forest model to determine the winner of each game in the bracket. 
+
+The results of this project serve three purposes. First, it helps coaches determine how well their teams performed in head to head matchups with specific teams. If Team A drew against Team B in the regular season but won against them in the bracket, it tells the coaches that the team definitely had the potential to win the game based on the way they played. Second, it gives coaches data for other league-cum knockout style tournaments. Some examples of these are the UEFA Champions League and the Capital One Cup. These tournaments are run using a league-cum knockout format, wherein teams initially compete as a league and then have essentially a bracket style tournament at the end to determine the winner. By knowing how well a team performs in the ‘May Madness’ bracket, a coach can have an idea about both their clutch factor and how they fare against other teams in a knockout tournament. Third, it gives fans of the league some more insight into how well their favorite team would perform in this unique style of competition!
+
+
+Materials and Methods: 
+
+To collect the data of the English Premier League, we used data from football-data.co.uk. Football-data.co.uk is a website with free soccer historical results and odds which help users make better betting decisions. For this study, we picked a season we are most interested in. We used the historical results of other seasons to train a random forest model in Python to predict the game result of that season and compare our results to the true outcome. The season we selected was the 2015-16 season, in which Leceister City, the winning team, had historic 5000/1 odds of winning before the season started.  
+
+In order to avoid overfitting, we used data other than the season above. For this season, we collected the statistical results of each team. This included full time result, full time team goal for both home and away team, full time and half time shots for both team, etc. We also took out the betting data in order not to be influenced by other analysis results. 
+
+The method we used is random forest, which is a classification algorithm in machine learning. It contains a large number of decision trees and by giving the method sufficient data, it could make a good prediction with the condition given. We feed this tool with abundant relevant data, and let the decision tree gain enough data to make predictions of the game result of the seasons we selected. 
+
+
+```{r setup, include=FALSE}
+install.packages("reticulate")
+library(reticulate)
+
+py_install("numpy")
+py_install("pandas")
+py_install("tensorflow")
+py_install("scikit-learn")
+py_install("xlsxwriter")
+```
+
+
+```{python}
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+import xlsxwriter as xw
+from sklearn.ensemble import RandomForestClassifier
+```
+
+
+Here, we read in our soccer matchup data. This is the data regarding each team's head to head statistics over multiple seasons. Here, we take 90% of the matchup data and used it to 'train' our machine learning model. Doing this ensures that the model improves its accuracy using a large amount of data and gets good at predicting outcomes. We use the remaining 10% of the data to test the accuracy of the model. 
+
+
+```{python}
+
+#Read in the matchup data
+Train = pd.read_csv('SoccerMatchup.csv', header=None)
+
+#Train the model
+MM_data = Train.sample(frac = 0.90)
+
+test_data = Train.merge(MM_data, how = 'outer' ,indicator=True).loc[lambda x : x['_merge']=='left_only']
+test_data = test_data[test_data.columns[:-1]]
+
+
+
+MM_data = MM_data.reset_index()
+MM_data = MM_data.drop(["index"],axis = 1)
+MM_X = MM_data[MM_data.columns[:-1]]
+MM_Wins = MM_data[MM_data.columns[-1]]
+
+#Test the model
+test_data = test_data.reset_index()
+test_data = test_data.drop(["index"],axis = 1)
+
+print(len(test_data))
+print(len(MM_data))
+```
+
+
+Here, we make sure to load our data into lists. The data is the statistics for the home and away team in each matchup. We obtained 14 different statistics each for the home and away team and hence, there are 28 columns in our data (14 stats for home team data and 14 stats for away team data). We then make sure that these lists have the same number of columns to compare against. 
+
+```{python}
+# converting to lists
+X_MM = []
+y_MM = []
+X_test = []
+y_test = []
+
+for X, y, data in ((X_MM, y_MM, MM_data), (X_test, y_test, test_data)):
+    for idx in data.index:
+        row = list(data.iloc[idx])
+        X.append(row[:-1])
+        y.append(row[-1])
+        
+print(len(X_MM), len(X_MM[0]))
+print(len(y_MM))
+
+print(len(X_test), len(X_test[0]))
+print(len(y_test))
+```
+
+Here we use the random_forest function which is a meta estimator that fits a number of decision tree classifiers onto our dataset. It uses averaging to improve the predictive accuracy and to control over-fitting. We run it through a for loop to see what the best N_estimators value is for the accuracy of our model
+
+We see our accuracy of our model here. It is important to note that even though the n_estimators stays the same, the accuracy and the probabilities of each matchup is EXPECTED to change slighlty. The decision tree randomizes with each run, even with the same inputs.
+
+```{python}
+
+maxi = 0
+new_max = 0
+esti = 0
+
+for r in range(1,206,5):
+    test_forest = RandomForestClassifier(n_estimators=r)
+    test_forest.fit(X_MM, y_MM)
+    new_max = test_forest.score(X_test,y_test)
+    
+    if maxi < new_max:
+        maxi = new_max
+        esti = r
+        random_forest = RandomForestClassifier(n_estimators = esti)
+        random_forest.fit(X_MM,y_MM)
+        x = random_forest.score(X_test,y_test)
+
+random_forest = RandomForestClassifier(n_estimators = esti)
+random_forest.fit(X_MM,y_MM)
+x = random_forest.score(X_test,y_test)
+print(f"Accurarcy of Model is: {x}")
+
+```
+
+Here we read in data from the 2015-16 season to feed into our decision tree model to make predictions about what happens in the 2015-16 season.
+```{python}
+allTeamData = pd.read_csv('2015_16_Soccer_Team_Stats.csv')
+allTeamData.head()
+```
+Below is the list of teams that are in the premier league for the 2015-2016 season.
+
+We cannot read strings into the decision tree so we are assigning a Team ID for each team.
+
+The seeds were generated based on the standings at the end of the season. For the sake of our bracket, we dropped the bottom four teams from consideration.
+
+1. Arsenal
+2. Bournemouth
+3. Chelsea
+4. Crystal Palace
+5. Everton
+6. Leicester City
+7. Liverpool
+8. Manchester City
+9. Manchester United
+10. Southampton
+11. Stoke City
+12. Swansea City
+13. Tottenham
+14. Watford
+15. West Bromwich Albion
+16. West Ham United
+
+
+Here we have our Premier League May Madness Postseason Tournament:
+Single Matchup Inquiry
+
+```{python}
+# The goal here is to match two teams and compare their stats against each other to predict a winner
+homeTeam = allTeamData.loc[allTeamData["Team"]==6]
+#print(homeTeam)
+
+awayTeam = allTeamData.loc[allTeamData["Team"]== 2]
+#print(awayTeam)
+```
+
+We strip our data of the unique team id (identifier) and feed in raw data into our decision tree model
+```{python}
+data = []
+ignore_cols = ["Team"]
+
+for col in homeTeam.columns:
+    if col not in ignore_cols:
+        data.append(homeTeam.iloc[0][col])
+
+for col in awayTeam.columns:
+    if col not in ignore_cols:
+        data.append(awayTeam.iloc[0][col])
+
+```
+
+Here we predict the outcome of the game and the associated probabilities of this outcome. The column on the left represents a home team loss and the column on the right represents a home team victory.
+```{python}
+random_forest.predict([data])
+print(random_forest.predict_proba([data]))
+
+
+```
+This next portion of code will be used to determine a team's probability of winning the bracket. This is the same process as mentioned above, only in a for loop with a few added features to output neatly to an xlsx file.
+
+```{python}
+
+Map = {1:"Arsenal", 2: "Bournemouth", 3: "Chelsea",4: "Crystal Palace", 5: "Everton", 6:"Leicester City", 7: "Liverpool", 8: "Manchester City",9: "Manchester United", 10: "Southampton", 11: "Stoke City", 12:"Swansea City", 13: "Tottenham", 14: "Watford", 15: "West Bromwich", 16: "West Ham United"}
+
+MatchupTable = pd.DataFrame([])
+
+
+for h in range(1,17):
+    for i in range(1,17):
+        homeTeam = allTeamData.loc[allTeamData["Team"]==h]
+        
+        if h == i:
+            continue
+       
+        awayTeam = allTeamData.loc[allTeamData["Team"]== i]
+        data = []
+        ignore_cols = ["Team"]
+        
+        for col in homeTeam.columns:
+            if col not in ignore_cols:
+                data.append(homeTeam.iloc[0][col])
+                
+        for col in awayTeam.columns:
+            if col not in ignore_cols:
+                data.append(awayTeam.iloc[0][col])
+        
+        winprobs = random_forest.predict_proba([data])
+        df1 = pd.DataFrame(winprobs)
+        df1["Home Team Name"] = [Map[h]]
+        df1["Away Team Name"] = [Map[i]]
+        
+        MatchupTable = MatchupTable.append(df1)
+
+
+
+MatchupTable.columns = [ "Home Team Probability of Loss","Home Team Probability of Win", "Home Team Name", "Away Team Name" ]
+
+
+
+Match = []*len(MatchupTable)
+
+for i in range(0,len(MatchupTable)) :
+    
+    if MatchupTable.iloc[i,0] > MatchupTable.iloc[i,1] :
+        
+        if i < 15 :
+            Match.append(Map[1]+ " Lost")
+        if i >= 15 and i < 30 :
+            Match.append(Map[2]+ " Lost")
+        if i >= 30 and i < 45 :
+            Match.append(Map[3]+ " Lost")
+        if i >= 45 and i < 60 :
+            Match.append(Map[4]+ " Lost")
+        if i >= 60 and i < 75 :
+            Match.append(Map[5]+ " Lost")
+        if i >= 75 and i < 90 :
+            Match.append(Map[6]+ " Lost")
+        if i >= 90 and i < 105 :
+            Match.append(Map[7]+ " Lost")
+        if i >= 105 and i < 120 :
+            Match.append(Map[8]+ " Lost")
+        if i >= 120 and i < 135 :
+            Match.append(Map[9]+ " Lost")
+        if i >= 135 and i < 150 :
+            Match.append(Map[10]+ " Lost")
+        if i >= 150 and i < 165 :
+            Match.append(Map[11]+ " Lost")
+        if i >= 165 and i < 180 :
+            Match.append(Map[12]+ " Lost")
+        if i >= 180 and i < 195 :
+            Match.append(Map[13]+ " Lost")
+        if i >= 195 and i < 210 :
+            Match.append(Map[14]+ " Lost")
+        if i >= 210 and i < 225 :
+            Match.append(Map[15]+ " Lost")
+        if i >= 225 and i < 240 :
+            Match.append(Map[16]+ " Lost")
+            
+    if MatchupTable.iloc[i,0] < MatchupTable.iloc[i,1] :
+        
+        if i < 15 :
+            Match.append(Map[1]+ " Won")
+        if i >= 15 and i < 30 :
+            Match.append(Map[2]+ " Won")
+        if i >= 30 and i < 45 :
+            Match.append(Map[3]+ " Won")
+        if i >= 45 and i < 60 :
+            Match.append(Map[4]+ " Won")
+        if i >= 60 and i < 75 :
+            Match.append(Map[5]+ " Won")
+        if i >= 75 and i < 90 :
+            Match.append(Map[6]+ " Won")
+        if i >= 90 and i < 105 :
+            Match.append(Map[7]+ " Won")
+        if i >= 105 and i < 120 :
+            Match.append(Map[8]+ " Won")
+        if i >= 120 and i < 135 :
+            Match.append(Map[9]+ " Won")
+        if i >= 135 and i < 150 :
+            Match.append(Map[10]+ " Won")
+        if i >= 150 and i < 165 :
+            Match.append(Map[11]+ " Won")
+        if i >= 165 and i < 180 :
+            Match.append(Map[12]+ " Won")
+        if i >= 180 and i < 195 :
+            Match.append(Map[13]+ " Won")
+        if i >= 195 and i < 210 :
+            Match.append(Map[14]+ " Won")
+        if i >= 210 and i < 225 :
+            Match.append(Map[15]+ " Won")
+        if i >= 225 and i < 240 :
+            Match.append(Map[16]+ " Won") 
+
+Results = np.asarray(Match)
+MatchupTable["Match Results"] = Results
+
+
+writer = pd.ExcelWriter("SoccerMatchupResults.xlsx",engine = "xlsxwriter")
+MatchupTable.to_excel(writer,sheet_name = 'Data')
+writer.save()
+    
+```
+Here is a specific instance of running the code. The data has been stored to SoccerMatchupResultsCase1. This will look different than the excel file that the above code generated because the random forest is randomized and changes with every running. It is impossible to ID a specific case of the random forest. Even with the same input, the random forest accuracy and probabilities change.
+
+Here we transition back to r to take advantage of the plotting features in r
+
+```{r}
+library("readxl")
+library("RColorBrewer")
+library("ggplot2")
+library("plotly")
+library("scales")
+library("tidyverse")
+
+gameResults <- read_excel("SoccerMatchupResultsCase1.xlsx")
+gameResults<-data.frame(gameResults)
+gameResults<-gameResults[-1]
+#head(gameResults)
+```
+
+In this next portion of code, we calculate each team's probability of winning based off of their projected matchups from the SoccerMatchupResults.xlsx file that indexes all games.
+
+```{r}
+#Predetermined Seeds
+
+#Leicester City Path to Success
+LC <-gameResults[77,2]*gameResults[85,2]*gameResults[88,2]*gameResults[76,2]
+
+#Bournemouth
+BM <-gameResults[77,1]*gameResults[152,1]*gameResults[197,1]*gameResults[1,1] 
+
+#Liverpool
+LP<-gameResults[100,2]*gameResults[81,1]*gameResults[103,2]*gameResults[6,1]
+
+#Stoke City
+SC<-gameResults[100,1]*gameResults[85,1]*gameResults[163,2]*gameResults[10,1]
+
+#Manchester United
+MU<-gameResults[131,2]*gameResults[133,2]*gameResults[83,1]*gameResults[8,1]
+
+#Swansea City
+SW<-gameResults[131,1]*gameResults[178,2]*gameResults[86,1]*gameResults[11,1]
+
+#Manchester City
+MC <-gameResults[118,2]*gameResults[116,2]*gameResults[82,1]*gameResults[7,1]
+
+#Watford
+WF<-gameResults[118,1]*gameResults[178,1]*gameResults[88,1]*gameResults[13,1]
+
+#Arsenal
+AR <-gameResults[3,2]*gameResults[2,2]*gameResults[4,2]*gameResults[76,1]
+
+#Crystal Palace
+CP <-gameResults[3,1]*gameResults[33,1]*gameResults[64,1]*gameResults[79,1]
+
+#West Ham
+WH<-gameResults[228,2]*gameResults[15,1]*gameResults[230,2]*gameResults[90,1]
+
+#Chelsea
+CH<-gameResults[228,1]*gameResults[2,1]*gameResults[34,2]*gameResults[78,1]
+
+#South Hampton
+SH<-gameResults[140,2]*gameResults[149,2]*gameResults[9,1]*gameResults[84,1]
+
+#Everton
+EV<-gameResults[140,1]*gameResults[74,2]*gameResults[4,1]*gameResults[80,1]
+
+#Tottenham
+TH<-gameResults[194,2]*gameResults[185,2]*gameResults[12,1]*gameResults[87,1]
+
+#West Brom
+WB<-gameResults[194,1]*gameResults[74,1]*gameResults[14,1]*gameResults[89,1]
+
+
+
+```
+
+Here we gather our odds and assign each team their corresponding tournament seed and name. We order our data by Odds so that our barplot looks clean. We also plot the results based on the seed of each team in a ggplot.
+
+```{r}
+Odds<-c(AR,BM,CH,CP,EV,LC,LP,MC,MU,SC,SH,SW,TH,WB,WF,WH)
+
+Squad<-c('Arsenal','Bournemouth','Chelsea','Crystal Palace','Everton','Leicester City','Liverpool','Manchester City','Manchester United','Stoke City','Southampton','Swansea City','Tottenham','West Bromwich','Watford','West Ham United')
+Tournament_Seed<-c(2,16,10,15,11,1,8,4,5,9,6,12,3,14,13,7)
+
+data<-data.frame(Odds, name = Squad, Tournament_Seed)
+
+data1<-data[order(Odds, decreasing = TRUE),]
+coul <- brewer.pal(5, "Set2")
+par(mar=c(12,4,4,4))
+
+# Sort by Odds
+barplot(data1$Odds, names.arg = data1$name, main = "Ordered Probability of Winning Pre-Seeded May Madness", ylab ="Chance to Win Tournamenent",ylim=c(0,0.10), border = F, las = 2, col= coul)
+
+#Sort by Seed
+ggplotly(ggplot(data, aes(x=Tournament_Seed, y=Odds, col=Squad)) + geom_point(size=5) +theme(axis.text.x = element_text(angle = 45)) + ggtitle("Probability of Winning Pre-Seeded May Madness") + labs(y = "Odds of Winning",x="Tournament Seed") + scale_x_continuous(n.breaks = 16))
+
+```
+
+
+Same logic applied as above only for randomized bracket.
+```{r}
+#Randomized Seeds
+
+#Swansea City
+SC <-gameResults[166,2]*gameResults[167,2]*gameResults[174,2]*gameResults[171,2]
+
+#Arsenal
+AR <-gameResults[166,1]*gameResults[16,1]*gameResults[121,1]*gameResults[76,1] 
+
+#Everton
+EV<-gameResults[62,2]*gameResults[170,1]*gameResults[68,2]*gameResults[65,2]
+
+#Bournemouth
+BM<-gameResults[62,1]*gameResults[167,1]*gameResults[23,2]*gameResults[20,2]
+
+#Southampton
+SH<-gameResults[143,2]*gameResults[144,2]*gameResults[137,2]*gameResults[141,2]
+
+#Manchester City
+MC<-gameResults[143,1]*gameResults[113,2]*gameResults[22,1]*gameResults[82,1]
+
+#Crystal Palace
+CP <-gameResults[53,2]*gameResults[52,2]*gameResults[47,2]*gameResults[50,2]
+
+#Manchester United
+MU<-gameResults[53,1]*gameResults[113,1]*gameResults[23,1]*gameResults[83,1]
+
+#West Brom
+WB <-gameResults[224,2]*gameResults[213,2]*gameResults[216,2]*gameResults[219,2]
+
+#Watford
+WF <-gameResults[224,1]*gameResults[43,1]*gameResults[88,1]*gameResults[133,1]
+
+#Stoke City
+SC<-gameResults[153,2]*gameResults[163,2]*gameResults[156,2]*gameResults[159,2]
+
+#Chelsea
+CH<-gameResults[153,1]*gameResults[43,2]*gameResults[35,2]*gameResults[38,2]
+
+#Liverpool
+LP<-gameResults[96,2]*gameResults[102,2]*gameResults[103,2]*gameResults[98,2]
+
+#Leicester City
+LC<-gameResults[96,1]*gameResults[87,1]*gameResults[88,1]*gameResults[83,2]
+
+#West Ham
+WH<-gameResults[238,2]*gameResults[231,2]*gameResults[239,2]*gameResults[234,1]
+
+#Tottenham
+TH<-gameResults[238,1]*gameResults[87,1]*gameResults[193,2]*gameResults[132,1]
+```
+
+
+In this section of code, we create the same bar plot as before. It orders the probability of winning randomized may madness.
+```{r}
+Odds<-c(AR,BM,CH,CP,EV,LC,LP,MC,MU,SC,SH,SW,TH,WB,WF,WH)
+
+Squad<-c('Arsenal','Bournemouth','Chelsea','Crystal Palace','Everton','Leicester City','Liverpool','Manchester City','Manchester United','Stoke City','Southampton','Swansea City','Tottenham','West Bromwich','Watford','West Ham United')
+Tournament_Seed<-c(16,9,10,4,8,11,6,12,13,7,5,1,14,2,15,3)
+
+data6<-data.frame(Odds, name = Squad, Tournament_Seed)
+
+data7<-data6[order(Odds, decreasing = TRUE),]
+coul <- brewer.pal(5, "Set2")
+par(mar=c(8,5,5,5))
+
+#Sort by Odds
+barplot(data7$Odds, names.arg = data7$name, main = "Ordered Probability of Winning Randomized May Madness", ylab ="Chance to Win Tournamenent",ylim=c(0,0.09), border = F, las = 2, col= coul)
+```
+
+```{r, fig.align = "center", echo = FALSE, out.width = "70%"}
+knitr::include_graphics("Randomized Seeding.png")
+```
+
+
+```{r, fig.align = "center", echo = FALSE, out.width = "70%"}
+knitr::include_graphics("Seeding based on Rank.png")
+```
+```
+
+
+
+In this section of R code we plot our data by tournament seed in the randomized may madness matchup.
+```{r}
+#Sort by Seed
+ggplotly(ggplot(data6, aes(x=Tournament_Seed, y=Odds, col=Squad)) + geom_point(size=5) +theme(axis.text.x = element_text(angle = 45)) + ggtitle("Probability of Winning Randomized May Madness") + labs(y = "Odds of Winning",x=" Randomized Tournament Seed") + scale_x_continuous(n.breaks = 16))
+```
+
+In this chunk, we want to compare the difference in odds of winning between teams. We evaluate the odds themselves and the difference each team had in seeding.
+```{r}
+#Compare Odds Differences Between Brackets
+Difference_In_Odds<-(data$Odds - data6$Odds)
+
+#Difference in Seed will be positive if a team becomes higher rank
+#i.e. Pre-Seed = 8 but Randomized Seed = 2 results in a positive difference in seed
+Difference_In_Seed<-(data$Tournament_Seed - data6$Tournament_Seed)
+compare<-data.frame(Squad,Difference_In_Odds,Difference_In_Seed)
+
+
+#Difference in Odds
+par(mar=c(8,4,4,4))
+barplot(compare$Difference_In_Odds, names.arg = data7$name, main = "Odds Difference Between Pre-Seeded and Randomized Seeds", ylab ="Net Change in Odds to Win Tournamenent",ylim=c(-0.025,0.025), border = F, las = 2, col= coul)
+
+par(mar=c(8,5,5,5))
+ggplotly(ggplot(compare, aes(x=Difference_In_Seed, y=Difference_In_Odds,col=Squad)) + geom_point(size=5) +theme(axis.text.x = element_text(angle = 45)) + ggtitle("Difference in Probability of Winning\nBetween Randomized and Pre-Seeded Brackets") + labs(y = "Difference in Odds of Winning",x="Difference in Tournament Seed") +geom_hline(yintercept = 0, linetype ="dashed",color = "black",size= 1)+geom_vline(xintercept = 0, linetype ="dashed",color = "black",size= 1))
+
+
+```
+
+In this last section, we create a dataframe that shows what happens when a team's tournament seed changes.
+```{r}
+#Display Differences in Odds Outcomes
+#Key:
+#1st element is in regards to Odds
+#2nd element after underscore is in regards to change in seed
+
+pos_pos = 0
+pos_neg = 0
+neg_pos = 0
+neg_neg = 0
+neu_pos = 0
+neu_neg = 0
+pos_neu = 0
+neg_neu = 0
+neu_neu = 0
+
+
+for(i in 1:nrow(compare))
+    {
+    
+    
+    if(compare$Difference_In_Odds[i] > 0 && compare$Difference_In_Seed[i] > 0)
+        {
+          pos_pos = pos_pos + 1  
+        }
+    
+        
+    if(compare$Difference_In_Odds[i] > 0 && compare$Difference_In_Seed[i] < 0)
+        {
+          pos_neg = pos_neg + 1  
+        }
+   
+        
+    if(compare$Difference_In_Odds[i] < 0 && compare$Difference_In_Seed[i] > 0)
+        {
+          neg_pos = neg_pos + 1  
+        }
+        
+    if(compare$Difference_In_Odds[i] < 0 && compare$Difference_In_Seed[i] < 0)
+        {
+          neg_neg = neg_neg + 1  
+        }
+    
+    if(compare$Difference_In_Odds[i] == 0 && compare$Difference_In_Seed[i] > 0)
+        {
+          neu_pos = neu_pos + 1  
+        }
+        
+    if(compare$Difference_In_Odds[i] == 0 && compare$Difference_In_Seed[i] < 0)
+        {
+          neu_neg = neu_neg + 1  
+    }
+    
+        if(compare$Difference_In_Odds[i] == 0 && compare$Difference_In_Seed[i] == 0)
+        {
+          neu_neu = neu_neu + 1  
+        }
+    
+    
+    if(compare$Difference_In_Odds[i] > 0 && compare$Difference_In_Seed[i] == 0)
+        {
+          pos_neu = pos_neu + 1  
+        }
+    
+        if(compare$Difference_In_Odds[i] < 0 && compare$Difference_In_Seed[i] == 0)
+        {
+          neg_neu = pos_neu + 1  
+        }
+            
+            
+}
+
+Positive_Change_In_Odds<-c(pos_pos,pos_neu,pos_neg)
+Neutral_Change_In_Odds<-c(neu_pos,neu_neu, neu_neg)
+Negative_Change_In_Odds<-c(neg_pos,neg_neu,neg_neg)
+Classification<-c("Positive Change in Seed","Neutral Change in Seed","Negative Change in Seed")
+
+difresults<-data.frame(Classification, Positive_Change_In_Odds,Neutral_Change_In_Odds,Negative_Change_In_Odds)
+difresults
+
+
+
+```
+A positive change in seed means a team became a better ranked seed. For the case of this investigation 1 is the top seed. 
+Negative change in seed means a team became a worse ranked seed. 
+
+Leicester city and Arsenal had worse ranked seeds in the randomized may madness tournament but still saw a positive increase in their odds. This makes sense because Arsenal and Leicester City were the two best teams for this season.
+
+
+Results: 
+
+
+With our decision tree model made and accurately able to predict a probable winner, we can now begin to test how our model would predict a “May Madness” tournament. Before going over the bracket formatting and results of the bracket simulation, it is important to understand how our model could be used in future real-world sports analytics. With our index that generates the home team, away team, and the probability of a home team loss or win, we can begin to piece together a rough rankings estimate that coaches and football fans around the world can begin to understand their specific odds to certain teams. When it comes to predicting sport outcomes, football is commonly known as one of the most challenging to predict. The premier league has a long history, with many different teams winning the competition over its entirety, but still an overwhelming amount of the time, the top 6 big teams (Manchester City, Manchester United, Chelsea, Arsenal, Liverpool, Tottenham) continue to dominate the top spots. This model can hopefully help begin to inform and enlighten coaches on who their team plays best against, and who they struggle against. 
+
+When deciding on a season to run for our hypothetical 2015-2016 “May Madness” bracket, we decided to pick an anomaly season to test how different a “win or go home”-style tournament would affect final outcomes. In order to prevent double dipping of data, we took out the 1 season of data pertaining to the 2015-2016 PL season, when Leicester City won the title. We took the top 16 teams that finished in the Premier League at the end of 2015-2016 season and seeded them according to how they finished in the standings. Since Leicester City won that year, they are our #1 seed. As you can see in the figure, our model does end up having a couple of underdogs (the UCLA’s of the premier league, if you will). Everton, who unusually finished around 6-8th place as an average standing in the Premier League, ended up making a final four appearance. This is important to note because it could suggest to coaches of Everton or other PL teams that certain teams (like Everton and Watford) may be better as an away team vs a home team. It is also important to note that the set-up of the bracket is dependent on each team’s rank. A lower rank will give a home field advantage to the team, while higher seeds are forced to “travel” to the opponents stadium. When it comes to football score outcomes though, it seems that having a home field advantage has its pros and cons, and it is actually more dependent on the two teams themselves. Watford was able to beat Manchester City away, which is a very impressive result, while losing to Leicester city the following game. It is clear that certain teams are better than others at home, while some teams may prove to be better away than at their home stadium. 
+
+
+Results put into context: 
+
+The analysis mainly benefits coaches and managers in three ways. Firstly, it tells the manager the chance of his team winning in a head to head matchup against other teams in the league. This data is invaluable and helps a manager plan ahead in the season, knowing what fixtures lie ahead in the season and what the most likely outcome of those games might be. Secondly, it helps managers know how their team performs in high pressure situations (knockout games), data which they otherwise do not have access to since their team competes in a league format. This is helpful in case a team qualifies for a knockout-style competition. Thirdly, with the potential of the Super League being formed, a league featuring the top clubs across Europe, managers are able to see how their team fares not just against teams of their own league, but also teams across other leagues. 
+
+For fans, this is simply a tool to see how their favorite teams perform in a quick, knockout style tournament rather than a year long league. With the randomized bracket, fans are able to see how teams fare with a completely randomized seeding and can experience the excitement that basketball fans do with March Madness. It is a unique experience to see top teams compete in a match with extremely high stakes. 
+
+
+Area of Improvements and Future work:
+
+The accuracy of the predictions based on the statistics in our model is 74%. Although it is high enough to be a reference for coaches, it is not satisfactory for the public, especially those who intend to buy relative sports lotteries. As a result, in the future, we plan to include statistics of more seasons but not just season 2015/16 and also more elements that will influence results of games such as possession, shots on target, referees (some referees may result in very high or low win rate of a particular team).
+
+In the future, building various models and combining their results is necessary to get a higher accuracy. Also, a recommendation is to focus on a single game but not the whole tournament because the format of EPL is still a league. For a single game, we may choose different elements for each team to do the prediction. For example, Man city is a very dominant team and we may choose shots, shots on target and possession to do the model because these elements are the most relative ones to their wins. And for Leicester City, be famous for their counter attack tactics, we may choose running distance and average speed of players, etc.
+ 
+With the formation of the new Super League, our model is a useful tool in predicting the winner between two teams in a bracket style format. Thus, this may be used to run simulations on the Super League Knockout stages since there’s very little data available otherwise about teams from different leagues facing each other. 
+
+	
+	
+
+
